@@ -238,7 +238,7 @@
 	
 	Finally we want to choose the value of $\mu_0$ and $\mu_1$ again to maximize the lower bound. If we differentiate the right hand side wrt $|\mu_1-\mu_0|$, we get
 	\[\frac{|\mu_1 - \mu_0|}{4}   -  \frac{3|\mu_1 - \mu_0|^2}{16\sigma}\sqrt{n}.\]
-	The stationary point at $|\mu_1-\mu_0|$ is a maximum not a minimum, and we can show the lower bound is maximized at
+	The stationary point at $|\mu_1-\mu_0|=0$ is a minimum (when plugged in, we get a meaningless lower bound of 0). We can show the lower bound is maximized at the other stationary point
 	\[|\mu_1-\mu_0| = \frac{4\sigma}{3\sqrt{n}}.\]
 	Hence by plugging in this value for $|\mu_1-\mu_0|$, we can show that 
 	\[
@@ -258,7 +258,7 @@
 	
 	%\newpage
 	\section{Application 2 - Kernel Regression}
-	In Kernel Regression we observe data $Y_i = f(X_i) + \epsilon_i$ where $X_i$ is a known feature matrix and the errors/noise $\epsilon_i \sim \mathbf{N}(0,1)$. 
+	In Kernel Regression we observe data $Y_i = f(X_i) + \epsilon_i$ where $X_i$ is a known feature matrix and the errors/noise are iid mean-zero Gaussian $\epsilon_i \sim \mathbf{N}(0,1)$. 
 	
 	We wish to estimate the function $f$ under the assumption that it is Lipschitz continuous (with constant $L$). 
 	
@@ -270,18 +270,16 @@
 		\sum_{i=1}^n K(x_i,x)Y_i}{
 		\sum_{i=1}^n K(x_i,x)}
 	\]
-	for some choice of kernel function $K$. We showed earlier that for some constant $c$ and fixed $x_0$,
+	for some choice of kernel function $K$. We showed in lecture 19 that for a specific kernel function $K()$, some constant $c$ and fixed $x_0$,
 	
 	\[ \sup_{f \text{ is L-Lipschitz}} \Ev \left[ (\hat{f}(x_0) - f(x_0))^2 \right] \leq c\left(\frac{L\sigma^2}{n}\right)^{\frac{2}{3}}\]
 	
-	We will now show a lower bound. 
-	
-	As our risk is the MSE, we choose the loss and the semi-metric according to, 
+	We will now show a lower bound on the MSE. We choose the loss and the semi-metric according to
 	\[
 	\Phi(\rho) = \rho^2, \quad \rho(f_0,f_1) = |f_0(x_0) - f_1(x_0)| \quad (\text{ distance at } x_0).
 	\]
 	
-	We choose the two functions to test on as $f_0(x) = 0$ for all x and 
+	We choose the two functions to test on as $f_0(x) = 0$ for all $x$ and 
 	\[f_1(x) = \begin{cases}
 	L(\epsilon - |x - x_0|) &\quad \forall \; |x- x_0| \leq \epsilon \\
 	0 &\quad \text{ otherwise}. 
@@ -320,11 +318,13 @@
 	&= \sum_{i=0}^n \int \log \left(\frac{P_{0i}(Y_i)}{P_{1i}(Y_i)}\right)P_{0i}(Y_i)dY_i \cdot \left(  \underbrace{\Pi_{j \neq i} P_{0j}\left(Y_j\right) d Y_j}_{\text{integrates to one}} \right)  \\                       
 	&= \sum_{i=0}^n \int \log \left(\frac{P_{0i}(Y_i)}{P_{1i}(Y_i)}\right)P_{0i}(Y_i)dY_i \quad { \equiv \text{KL divergence of normal distributions}} \\
 	&= \sum_{i=0}^n \frac{1}{2\sigma^2} \left( f_0(X_i) - f_1(X_i)\right)^2 \\ 
-	&= \sum_{i=0}^{n} \mathbf{1}\{|X_i-X_0| < \epsilon\} \cdot \frac{L^2 (\epsilon - |X_i-X-0|)^2}{2\sigma^2} \\ 
-	&= \frac{L^2}{2\sigma^2} \cdot 2 \sum_{i=0}^{\epsilon n} \left(\frac{i}{n}\right)^2 \quad \text{ under assumption that } X_i = \frac{i}{n}\\ 
+	&= \sum_{i=0}^{n} \mathbf{1}\{|X_i-x_0| < \epsilon\} \cdot \frac{L^2 (\epsilon - |X_i-x_0|)^2}{2\sigma^2} \\ 
+	&= \frac{L^2}{2\sigma^2} \cdot 2 \sum_{i=0}^{\epsilon n} \left(\frac{i}{n}\right)^2 \quad \text{ assuming that } X_i = \frac{i}{n} \text{ and }x_0, \epsilon\text{ are both multiples of }\frac{1}{n}\\ 
 	&= \frac{L^2}{\sigma^2n^2} \cdot \left[ \frac{\epsilon n(\epsilon n+1)(2\epsilon n+1)}{6}\right] \\
 	&\approx \frac{L^2}{\sigma^2n^2} \cdot \frac{\epsilon^3 n^3}{3}.
 	\end{align*}
+	
+	We made an assumption above that $x_0,\epsilon$ are multiples of $\frac{1}{n}$, but even if they were not the above bound would have same asymptotic dependence but just differ in the constant.
 	
 	Therefore the minimax lower bound is 
 	\begin{align*}
